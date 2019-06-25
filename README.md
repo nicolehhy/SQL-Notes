@@ -96,18 +96,18 @@ A quick review of SQL query usage. In this section, I summarize SQL startup, dat
         RENAME TABLE old_name TO new_name
         RENAME TABLE old_name TO db.new_name （move the table to another database）
         -- operation name
-            ADD[ COLUMN] 字段定义       -- 增加字段
-                AFTER 字段名          -- 表示增加在该字段名后面
-                FIRST               -- 表示增加在第一个
-            ADD PRIMARY KEY(字段名)   -- 创建主键
-            ADD UNIQUE [索引名] (字段名)-- 创建唯一索引
-            ADD INDEX [索引名] (字段名) -- 创建普通索引
-            DROP[ COLUMN] 字段名      -- 删除字段
+            ADD[ COLUMN] 字段定义       -- add a new column
+                AFTER 字段名          -- add a new column that follows specific one
+                FIRST               -- add a new column as the first one
+            ADD PRIMARY KEY(字段名)   -- create a primary key
+            ADD UNIQUE [索引名] (字段名)-- create unique index
+            ADD INDEX [索引名] (字段名) -- create regular index
+            DROP[ COLUMN] 字段名      -- delete a column
             MODIFY[ COLUMN] 字段名 字段属性     -- 支持对字段属性进行修改，不能修改字段名(所有原有属性也需写上)
             CHANGE[ COLUMN] 原字段名 新字段名 字段属性      -- 支持对字段名修改
             DROP PRIMARY KEY    -- 删除主键(删除主键前需删除其AUTO_INCREMENT属性)
-            DROP INDEX 索引名 -- 删除索引
-            DROP FOREIGN KEY 外键    -- 删除外键
+            DROP INDEX 索引名 -- delete the index
+            DROP FOREIGN KEY 外键    -- delete the foreign key
             
   -- Delete table
     DROP TABLE[ IF EXISTS] tb_name ...
@@ -144,10 +144,32 @@ A quick review of SQL query usage. In this section, I summarize SQL startup, dat
   * Check/Delete/Modify the data
   ```SQL 
   SELECT col_name from tb_name;
-  DELETE FROM 表名[ 删除条件子句]
+  DELETE FROM tb_name[ 删除条件子句]
         没有条件子句，则会删除全部
-  UPDATE 表名 SET 字段名=新值[, 字段名=新值] [更新条件]
+  UPDATE tb_name SET col_name=new_value[, 字段名=新值] [更新条件]
   ``` 
   
-  
+  ## Character encoding
+  -- MySQL, database, table, field can be set to encode
+  -- Data encoding and client encoding do not need to be consistent
+   * View all the character set
+  -- character_set_client (客户端向服务器发送数据时使用的编码| encoding used for the clients sending information to the server)
+  -- character_set_results (服务器端将结果返回给客户端所使用的编码| encoding used for the clients sending information to the server)
+  -- character_set_connection (连接层编码| encoding used for the clients sending information to the server)
+  ```SQL
+  SHOW VARIABLES LIKE 'character_set_%' -- View all the character set
+  SET 变量名 = 变量值
+  SET character_set_client = gbk;
+  SET character_set_results = gbk;
+  SET character_set_connection = gbk;
+  SET NAMES GBK; -- （相当于完成以上三个设置| equals to complete the three steps above)
+ 
+ * Proofreading set
+ -- 校对集用以排序
+  ```SQL
+ SHOW CHARACTER SET [LIKE 'pattern']/SHOW CHARSET [LIKE 'pattern'] 查看所有字符集
+ SHOW COLLATION [LIKE 'pattern'] 查看所有校对集 
+ CHARSET 字符集编码 设置字符集编码
+ COLLATE 校对集编码 设置校对集编码
+  ```
   
