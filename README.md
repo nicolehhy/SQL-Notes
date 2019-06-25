@@ -152,9 +152,10 @@ A quick review of SQL query usage. In this section, I summarize SQL startup, dat
   ## Character encoding
   -- MySQL, database, table, field can be set to encode
   -- Data encoding and client encoding do not need to be consistent
-   * View all the character set
-  -- character_set_client (客户端向服务器发送数据时使用的编码| encoding used for the clients sending information to the server)
-  -- character_set_results (服务器端将结果返回给客户端所使用的编码| encoding used for the clients sending information to the server)
+  
+  * View all the character set <br>
+  -- character_set_client (客户端向服务器发送数据时使用的编码| encoding used for the clients sending information to the server) <br>
+  -- character_set_results (服务器端将结果返回给客户端所使用的编码| encoding used for the clients sending information to the server) <br>
   -- character_set_connection (连接层编码| encoding used for the clients sending information to the server)
   ```SQL
   SHOW VARIABLES LIKE 'character_set_%' -- View all the character set
