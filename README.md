@@ -163,6 +163,7 @@ A quick review of SQL query usage. In this section, I summarize SQL startup, dat
   SET character_set_results = gbk;
   SET character_set_connection = gbk;
   SET NAMES GBK; -- （相当于完成以上三个设置| equals to complete the three steps above)
+  ```
  
  * Proofreading set
  -- 校对集用以排序
@@ -172,4 +173,9 @@ A quick review of SQL query usage. In this section, I summarize SQL startup, dat
  CHARSET 字符集编码 设置字符集编码
  COLLATE 校对集编码 设置校对集编码
   ```
+  
+  ## Data type (column type)
+  * Numerical type
+  
+
   
