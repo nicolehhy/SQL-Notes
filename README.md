@@ -372,7 +372,7 @@ set(val1, val2, val3...)
     ```
   * Example in `Creating Constraint`: <br>
 -- To allow naming of a FOREIGN KEY constraint, and for defining a FOREIGN KEY constraint on multiple columns
-    * MySQL / SQL Server / Oracle / MS Access
+     * MySQL / SQL Server / Oracle / MS Access
     ```SQL
     CREATE TABLE Orders (
     OrderID int NOT NULL,
@@ -385,13 +385,13 @@ set(val1, val2, val3...)
     ```
   * Example in `Alter`: <br>
 -- To create a FOREIGN KEY constraint on the "PersonID" column when the "Orders" table `is already created`
-   * MySQL / SQL Server / Oracle / MS Access:
+    * MySQL / SQL Server / Oracle / MS Access:
    ```SQL
    ALTER TABLE Orders
    ADD FOREIGN KEY (PersonID) REFERENCES Persons(PersonID);
    ```
 -- To allow naming of a FOREIGN KEY constraint, and for defining a FOREIGN KEY constraint on multiple columns
-   * MySQL / SQL Server / Oracle / MS Access:
+    * MySQL / SQL Server / Oracle / MS Access:
    ```SQL
    ALTER TABLE Orders
    ADD CONSTRAINT FK_PersonOrder
@@ -399,12 +399,12 @@ set(val1, val2, val3...)
    ```
   * Example in `Drop`: <br>
 -- To drop a FOREIGN KEY constraint, use the following SQL: <br>
-   * MySQL
+    * MySQL
    ```SQL
    ALTER TABLE Orders
    DROP FOREIGN KEY FK_PersonOrder;
    ```
-   * SQL Server / Oracle / MS Access
+    * SQL Server / Oracle / MS Access
    ```SQL
    ALTER TABLE Orders
    DROP CONSTRAINT FK_PersonOrder;
