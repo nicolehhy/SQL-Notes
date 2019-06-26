@@ -400,12 +400,12 @@ set(val1, val2, val3...)
     ```
    * Example in `Drop`: <br>
 -- To drop a FOREIGN KEY constraint, use the following SQL: <br>
-    * MySQL
+     * MySQL
     ```SQL
-    ALTER TABLE Orders
+    ALTER TABLE Orders 
     DROP FOREIGN KEY FK_PersonOrder;
     ```
-    * SQL Server / Oracle / MS Access
+     * SQL Server / Oracle / MS Access
     ```SQL
     ALTER TABLE Orders
     DROP CONSTRAINT FK_PersonOrder;
