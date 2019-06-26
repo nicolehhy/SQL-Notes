@@ -360,18 +360,17 @@ Example : <br>
     PersonID int,
     PRIMARY KEY (OrderID),
     FOREIGN KEY (PersonID) REFERENCES Persons(PersonID)
-);
+    );
     ```
     * SQL Server / Oracle / MS Access
-    ```sql
+    ```SQL
     CREATE TABLE Orders (
     OrderID int NOT NULL PRIMARY KEY,
     OrderNumber int NOT NULL,
     PersonID int FOREIGN KEY REFERENCES Persons(PersonID)
-);
+    );
     ```
- -- To allow naming of a FOREIGN KEY constraint, and for defining a FOREIGN KEY constraint on multiple columns, <br>
-    use the following SQL syntax:
+-- To allow naming of a FOREIGN KEY constraint, and for defining a FOREIGN KEY constraint on multiple columns
     * MySQL / SQL Server / Oracle / MS Access
     ```SQL
     CREATE TABLE Orders (
@@ -381,17 +380,15 @@ Example : <br>
     PRIMARY KEY (OrderID),
     CONSTRAINT FK_PersonOrder FOREIGN KEY (PersonID)
     REFERENCES Persons(PersonID)
-);
+    );
     ```
--- To create a FOREIGN KEY constraint on the "PersonID" column when the "Orders" table `is already created`, <br>
-   use the following SQL:
+-- To create a FOREIGN KEY constraint on the "PersonID" column when the "Orders" table `is already created`
    * MySQL / SQL Server / Oracle / MS Access:
    ```SQL
    ALTER TABLE Orders
    ADD FOREIGN KEY (PersonID) REFERENCES Persons(PersonID);
    ```
--- To allow naming of a FOREIGN KEY constraint, and for defining a FOREIGN KEY constraint on multiple columns, <br>
-   use the following SQL syntax:
+-- To allow naming of a FOREIGN KEY constraint, and for defining a FOREIGN KEY constraint on multiple columns
    ```SQL
    ALTER TABLE Orders
    ADD CONSTRAINT FK_PersonOrder
