@@ -386,7 +386,7 @@ set(val1, val2, val3...)
     ```
     <br>
   * Example in `Alter`: <br>
--- To drop a FOREIGN KEY constraint, use the following SQL:
+-- To create a FOREIGN KEY constraint on the "PersonID" column when the "Orders" table `is already created`  <br>
     * MySQL
     ```SQL
     ALTER TABLE Orders
@@ -397,7 +397,6 @@ set(val1, val2, val3...)
     ALTER TABLE Orders
     DROP CONSTRAINT FK_PersonOrder;
     ```
- -- To create a FOREIGN KEY constraint on the "PersonID" column when the "Orders" table `is already created` <br>
     * MySQL/ SQL Server / Oracle / MS Access:
     ```SQL
     ALTER TABLE Orders
