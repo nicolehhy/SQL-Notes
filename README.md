@@ -350,7 +350,7 @@ set(val1, val2, val3...)
 1. The FOREIGN KEY constraint is used to prevent actions that would destroy links between tables. <br>
 2. The FOREIGN KEY constraint also prevents invalid data from being inserted into the foreign key column, <br>
    because it has to be one of the values contained in the table it points to. <br>
-Example : <br>
+  * Example in `Create`: <br>
 -- The following SQL 'CREATES' a FOREIGN KEY on the "PersonID" column when the "Orders" table is created:
     * MySQL
     ```SQL
@@ -370,6 +370,7 @@ Example : <br>
     PersonID int FOREIGN KEY REFERENCES Persons(PersonID)
     );
     ```
+  * Example in `Creating Constraint`: <br>
 -- To allow naming of a FOREIGN KEY constraint, and for defining a FOREIGN KEY constraint on multiple columns
     * MySQL / SQL Server / Oracle / MS Access
     ```SQL
@@ -382,6 +383,7 @@ Example : <br>
     REFERENCES Persons(PersonID)
     );
     ```
+  * Example in `Alter`: <br>
 -- To create a FOREIGN KEY constraint on the "PersonID" column when the "Orders" table `is already created`
    * MySQL / SQL Server / Oracle / MS Access:
    ```SQL
@@ -389,11 +391,13 @@ Example : <br>
    ADD FOREIGN KEY (PersonID) REFERENCES Persons(PersonID);
    ```
 -- To allow naming of a FOREIGN KEY constraint, and for defining a FOREIGN KEY constraint on multiple columns
+   * MySQL / SQL Server / Oracle / MS Access:
    ```SQL
    ALTER TABLE Orders
    ADD CONSTRAINT FK_PersonOrder
    FOREIGN KEY (PersonID) REFERENCES Persons(PersonID);
    ```
+  * Example in `Drop`: <br>
 -- To drop a FOREIGN KEY constraint, use the following SQL: <br>
    * MySQL
    ```SQL
@@ -405,6 +409,7 @@ Example : <br>
    ALTER TABLE Orders
    DROP CONSTRAINT FK_PersonOrder;
    ```
+  * Summary: <br>
    ```SQL
     -- 将表t1的t1_id外键关联到表t2的id字段。
     -- 每个外键都有一个名字，可以通过 constraint 指定
