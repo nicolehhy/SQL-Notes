@@ -391,8 +391,7 @@ set(val1, val2, val3...)
    ALTER TABLE Orders
    ADD FOREIGN KEY (PersonID) REFERENCES Persons(PersonID);
    ```
--- To allow naming of a FOREIGN KEY constraint, and for defining a FOREIGN KEY constraint on multiple columns <br>
-     * MySQL / SQL Server / Oracle / MS Access:
+     * MySQL / SQL Server / Oracle / MS Access to allow naming of a FOREIGN KEY constraint:
    ```SQL
    ALTER TABLE Orders
    ADD CONSTRAINT FK_PersonOrder
