@@ -155,8 +155,8 @@ A quick review of SQL query usage. In this section, I summarize SQL startup, dat
   
   * View all the character set <br>
   -- character_set_client (客户端向服务器发送数据时使用的编码| encoding used for the clients sending information to the server) <br>
-  -- character_set_results (服务器端将结果返回给客户端所使用的编码| encoding used for the clients sending information to the server) <br>
-  -- character_set_connection (连接层编码| encoding used for the clients sending information to the server)
+  -- character_set_results (服务器端将结果返回给客户端所使用的编码| encoding used for the server sending information to the clients) <br>
+  -- character_set_connection (连接层编码| encoding used for connection)
   ```SQL
   SHOW VARIABLES LIKE 'character_set_%' -- View all the character set
   SET 变量名 = 变量值
@@ -335,13 +335,82 @@ set(val1, val2, val3...)
     默认为1开始自动增长。可以通过表属性 auto_increment = x进行设置，或 alter table tbl auto_increment = x;
 ```     
 * COMMENT 注释 <br>
-    例：create table tab ( id int ) comment '注释内容';
-* FOREIGN KEY 外键约束
-```SQL
-    用于限制主表与从表数据完整性。
-    alter table t1 add constraint `t1_t2_fk` foreign key (t1_id) references t2(id);
-        -- 将表t1的t1_id外键关联到表t2的id字段。
-        -- 每个外键都有一个名字，可以通过 constraint 指定
+    例：
+    -- Comment table
+    create table tab ( id int ) comment '注释内容'; 
+    -- Comment column    
+        create table test( 
+        id int not null default 0 comment '用户id' ) 
+    -- Comment table and column 
+        create table test1 ( 
+        field_name int comment '字段的注释' 
+        )comment='表的注释'; 
+        
+* FOREIGN KEY 外键约束 <br>
+1. The FOREIGN KEY constraint is used to prevent actions that would destroy links between tables. <br>
+2. The FOREIGN KEY constraint also prevents invalid data from being inserted into the foreign key column, <br>
+   because it has to be one of the values contained in the table it points to. <br>
+Example : <br>
+-- The following SQL 'CREATES' a FOREIGN KEY on the "PersonID" column when the "Orders" table is created:
+    * MySQL
+    ```SQL
+    CREATE TABLE Orders (
+    OrderID int NOT NULL,
+    OrderNumber int NOT NULL,
+    PersonID int,
+    PRIMARY KEY (OrderID),
+    FOREIGN KEY (PersonID) REFERENCES Persons(PersonID)
+);
+    ```
+    * SQL Server / Oracle / MS Access
+    ```sql
+    CREATE TABLE Orders (
+    OrderID int NOT NULL PRIMARY KEY,
+    OrderNumber int NOT NULL,
+    PersonID int FOREIGN KEY REFERENCES Persons(PersonID)
+);
+    ```
+ -- To allow naming of a FOREIGN KEY constraint, and for defining a FOREIGN KEY constraint on multiple columns, <br>
+    use the following SQL syntax:
+    * MySQL / SQL Server / Oracle / MS Access
+    ```SQL
+    CREATE TABLE Orders (
+    OrderID int NOT NULL,
+    OrderNumber int NOT NULL,
+    PersonID int,
+    PRIMARY KEY (OrderID),
+    CONSTRAINT FK_PersonOrder FOREIGN KEY (PersonID)
+    REFERENCES Persons(PersonID)
+);
+    ```
+-- To create a FOREIGN KEY constraint on the "PersonID" column when the "Orders" table `is already created`, <br>
+   use the following SQL:
+   * MySQL / SQL Server / Oracle / MS Access:
+   ```SQL
+   ALTER TABLE Orders
+   ADD FOREIGN KEY (PersonID) REFERENCES Persons(PersonID);
+   ```
+-- To allow naming of a FOREIGN KEY constraint, and for defining a FOREIGN KEY constraint on multiple columns, <br>
+   use the following SQL syntax:
+   ```SQL
+   ALTER TABLE Orders
+   ADD CONSTRAINT FK_PersonOrder
+   FOREIGN KEY (PersonID) REFERENCES Persons(PersonID);
+   ```
+-- To drop a FOREIGN KEY constraint, use the following SQL: <br>
+   * MySQL
+   ```SQL
+   ALTER TABLE Orders
+   DROP FOREIGN KEY FK_PersonOrder;
+   ```
+   * SQL Server / Oracle / MS Access
+   ```SQL
+   ALTER TABLE Orders
+   DROP CONSTRAINT FK_PersonOrder;
+   ```
+   ```SQL
+    -- 将表t1的t1_id外键关联到表t2的id字段。
+    -- 每个外键都有一个名字，可以通过 constraint 指定
     存在外键的表，称之为从表（子表），外键指向的表，称之为主表（父表）。
     作用：保持数据一致性，完整性，主要目的是控制存储在外键表（从表）中的数据。
     MySQL中，可以对InnoDB引擎使用外键约束：
