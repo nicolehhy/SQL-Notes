@@ -336,6 +336,7 @@ set(val1, val2, val3...)
 ```     
 * COMMENT 注释 <br>
     例：
+    ```SQL
     -- Comment table
     create table tab ( id int ) comment '注释内容'; 
     -- Comment column    
@@ -345,7 +346,7 @@ set(val1, val2, val3...)
         create table test1 ( 
         field_name int comment '字段的注释' 
         )comment='表的注释'; 
-        
+    ```    
 * FOREIGN KEY 外键约束 <br>
 1. The FOREIGN KEY constraint is used to prevent actions that would destroy links between tables. <br>
 2. The FOREIGN KEY constraint also prevents invalid data from being inserted into the foreign key column, <br>
@@ -371,7 +372,7 @@ set(val1, val2, val3...)
     );
     ```
   * Example in `Creating Constraint`: <br>
--- To allow naming of a FOREIGN KEY constraint, and for defining a FOREIGN KEY constraint on multiple columns
+-- To allow naming of a FOREIGN KEY constraint, and for defining a FOREIGN KEY constraint on multiple columns <br>
      * MySQL / SQL Server / Oracle / MS Access
     ```SQL
     CREATE TABLE Orders (
@@ -384,13 +385,13 @@ set(val1, val2, val3...)
     );
     ```
   * Example in `Alter`: <br>
--- To create a FOREIGN KEY constraint on the "PersonID" column when the "Orders" table `is already created`
+-- To create a FOREIGN KEY constraint on the "PersonID" column when the "Orders" table `is already created` <br>
     * MySQL / SQL Server / Oracle / MS Access:
    ```SQL
    ALTER TABLE Orders
    ADD FOREIGN KEY (PersonID) REFERENCES Persons(PersonID);
    ```
--- To allow naming of a FOREIGN KEY constraint, and for defining a FOREIGN KEY constraint on multiple columns
+-- To allow naming of a FOREIGN KEY constraint, and for defining a FOREIGN KEY constraint on multiple columns <br>
     * MySQL / SQL Server / Oracle / MS Access:
    ```SQL
    ALTER TABLE Orders
