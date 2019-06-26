@@ -384,41 +384,42 @@ set(val1, val2, val3...)
     REFERENCES Persons(PersonID)
     );
     ```
+    <br>
   * Example in `Alter`: <br>
 -- To drop a FOREIGN KEY constraint, use the following SQL:
     * MySQL
     ```SQL
-   ALTER TABLE Orders
-   DROP FOREIGN KEY FK_PersonOrder;
+    ALTER TABLE Orders
+    DROP FOREIGN KEY FK_PersonOrder;
     ```
     * SQL Server / Oracle / MS Access
     ```SQL
-   ALTER TABLE Orders
-   DROP CONSTRAINT FK_PersonOrder;
+    ALTER TABLE Orders
+    DROP CONSTRAINT FK_PersonOrder;
     ```
  -- To create a FOREIGN KEY constraint on the "PersonID" column when the "Orders" table `is already created` <br>
     * MySQL/ SQL Server / Oracle / MS Access:
     ```SQL
-   ALTER TABLE Orders
-   ADD FOREIGN KEY (PersonID) REFERENCES Persons(PersonID);
+    ALTER TABLE Orders
+    ADD FOREIGN KEY (PersonID) REFERENCES Persons(PersonID);
     ```
     * MySQL / SQL Server / Oracle / MS Access to allow naming of a FOREIGN KEY constraint:
     ```SQL
-   ALTER TABLE Orders
-   ADD CONSTRAINT FK_PersonOrder
-   FOREIGN KEY (PersonID) REFERENCES Persons(PersonID);
+    ALTER TABLE Orders
+    ADD CONSTRAINT FK_PersonOrder
+    FOREIGN KEY (PersonID) REFERENCES Persons(PersonID);
     ```
    * Example in `Drop`: <br>
 -- To drop a FOREIGN KEY constraint, use the following SQL:
     * MySQL
     ```SQL
-   ALTER TABLE Orders
-   DROP FOREIGN KEY FK_PersonOrder;
+    ALTER TABLE Orders
+    DROP FOREIGN KEY FK_PersonOrder;
     ```
     * SQL Server / Oracle / MS Access
     ```SQL
-   ALTER TABLE Orders
-   DROP CONSTRAINT FK_PersonOrder;
+    ALTER TABLE Orders
+    DROP CONSTRAINT FK_PersonOrder;
     ```
   * Summary: <br>
    ```SQL
