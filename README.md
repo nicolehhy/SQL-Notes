@@ -575,3 +575,75 @@ select * from t1 where (id, gender) in (select id, gender from t2);
 all, some 可以配合其他运算符一起使用。
 ```
 ## Join 
+Here are the different types of the JOINs in SQL: <br>
+
+-- 1. (INNER) JOIN: Returns records that have matching values in both tables <br>
+```SQL
+The following SQL statement selects all orders with customer and shipper information:
+SELECT Orders.OrderID, Customers.CustomerName, Shippers.ShipperName
+FROM ((Orders
+INNER JOIN Customers ON Orders.CustomerID = Customers.CustomerID)
+INNER JOIN Shippers ON Orders.ShipperID = Shippers.ShipperID);
+```
+-- 2. LEFT (OUTER) JOIN: Returns all records from the left table, and the matched records from the right table <br>
+-- 3. RIGHT (OUTER) JOIN: Returns all records from the right table, and the matched records from the left table <br>
+-- 4. FULL (OUTER) JOIN: Returns all records when there is a match in either left or right table <br>
+-- 5. SELF JOIN : A self JOIN is a regular join, but the table is joined with itself <br>
+```SQL
+The following SQL statement matches customers that are from the same city:
+SELECT A.CustomerName AS CustomerName1, B.CustomerName AS CustomerName2, A.City
+FROM Customers A, Customers B
+WHERE A.CustomerID <> B.CustomerID
+AND A.City = B.City 
+ORDER BY A.City;
+```
+-- 自然连接(natural join) <br>
+```SQL
+    自动判断连接条件完成连接。
+    相当于省略了using，会自动查找相同字段名。
+    natural join
+    natural left join
+    natural right join
+
+select info.id, info.name, info.stu_num, extra_info.hobby, extra_info.sex from info, extra_info where info.stu_num = extra_info.stu_id;
+```
+
+## Insert
+```SQL
+select语句获得的数据可以用insert插入。
+可以省略对列的指定，要求 values () 括号内，提供给了按照列顺序出现的所有字段的值。
+    或者使用set语法。
+    INSERT INTO tbl_name SET field=value,...；
+可以一次性使用多个值，采用(), (), ();的形式。
+    INSERT INTO tbl_name VALUES (), (), ();
+可以在列值指定时，使用表达式。
+    INSERT INTO tbl_name VALUES (field_value, 10+10, now());
+可以使用一个特殊值 DEFAULT，表示该列使用默认值。
+    INSERT INTO tbl_name VALUES (field_value, DEFAULT);
+可以通过一个查询的结果，作为需要插入的值。
+    INSERT INTO tbl_name SELECT ...;
+可以指定在插入的值出现主键（或唯一索引）冲突时，更新其他非主键列的信息。
+    INSERT INTO tbl_name VALUES/SET/SELECT ON DUPLICATE KEY UPDATE 字段=值, …;
+```
+
+## Delete
+```SQL
+DELETE FROM tbl_name [WHERE where_definition] [ORDER BY ...] [LIMIT row_count]
+按照条件删除。where
+指定删除的最多记录数。limit
+可以通过排序条件删除。order by + limit
+支持多表删除，使用类似连接语法。
+delete from 需要删除数据多表1，表2 using 表连接操作 条件。
+```
+
+## Truncate
+```SQL
+TRUNCATE [TABLE] tbl_name
+清空数据
+删除重建表
+区别：
+1，truncate 是删除表再创建，delete 是逐条删除
+2，truncate 重置auto_increment的值。而delete不会
+3，truncate 不知道删除了几条，而delete知道。
+4，当被用于带分区的表时，truncate 会保留分区
+```
