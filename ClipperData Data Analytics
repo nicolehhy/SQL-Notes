@@ -11,5 +11,51 @@ ClipperData is a company who takes
 No.1 航线追踪，整理出有问题的航线记录，结合数据可视化结果和航运公司发布的信息找出问题存在的原因，并以合适的方式将错误的信息改为正确的，
      最后将其更新到数据库中。航线追踪的目的是我们在建立货物需求量预测模型之前，需要保证我们所用到的数据是正确且符合真实情况的。
      
+     谷物类：
+     1. 先找到需要修改的记录
+     select * from voyage_bulk_iss where lo_country_code = 'RU' and grade = 'ED033' AND SOURCE ILIKE '%MAKEUP%' and weight_mt > 10000
+     union
+     select * from voyage_bulk_iss where lo_country_code = 'UA' and grade = 'ED033' AND SOURCE ILIKE '%MAKEUP%' and weight_mt > 10000
+     union
+     select * from voyage_bulk_iss where lo_country_code = 'RU' and grade = 'ED037' AND SOURCE ILIKE '%MAKEUP%' and weight_mt > 10000
+     union
+     select * from voyage_bulk_iss where lo_country_code = 'UA' and grade = 'ED037' AND SOURCE ILIKE '%MAKEUP%' and weight_mt > 10000
+     ORDER BY 14, 2 DESC
      
+     2. 一条一条检查船只航线draught变换记录，船只接卸地点，unload/load 记录是否正确
+     SELECT * FROM asvt_arrival_dry
+     where vessel =10159                                                                                                                                                               
+     order by date_arrive DESC 
+    
+     3. 对错误信息进行修改
+     Ⅰ 看航线记录的draught变换
+       首先检查在指定日期附近draught变化是否连续，例如卸货为10-6紧接着下一个Load为6-10。如果中途有差错，一般为缺失了arrival导致记录混乱，或者draught
+       记录出现错误。那么我们需要将正确的信息添加到指定的table里。
+       
+       缺失arrival   insert into asvt_arrival_x values(5770284, 2892, '2019-01-09 00:00:00') on conflict do nothing;
+       draught错误   insert into asvt_draught_x values(6788, '2019-03-02 18:20:47',12.6) on conflict do nothing;
+       
+     Ⅱ 初步判断发现draught没有错误
+       这种情况往往需要我们更仔细去核对地图信息和我们的航线信息。有时候draught没有变化意味着错误的情况或许较为难发现。
+       首先我们需要查看指定日期附近的这一段从load到unload的voyage是变化是否符合实际情况，再者就是draught看上去没有错误，但是连续好几个event都没有变化
+       这也需要考虑是否缺失了arrival或者draught信息记录错误。
+       
+       没有‘U/L’记录  查看此处POI是否可以load或者unload相应货物，如果系统里不可以进行相应行为，需要考虑是否需要更新load处和unload处POI信息从而让数据库
+                     识别到这一行为或者强行添加U/L在新的table上
+       缺失arrival   insert into asvt_arrival_x values(5770284, 2892, '2019-01-09 00:00:00') on conflict do nothing;
+       draught错误   insert into asvt_draught_x values(6788, '2019-03-02 18:20:47',12.6) on conflict do nothing;
+       查看agency    如果发现draught没有变化，可通过查到next port或者pre port来double check是否实际是存在接卸行为，通过改变draught来修正voyage
+       查看event     有时候由于船只一直停留在港口，系统抓到了多个event，但是有些event在lightling room被误认为进入了港口，这时要查看真正进入港口的event
+                     是否可以接卸指定货物
+       
+      III 发现航线信息和地图不相符
+          这种情况下说明我们找错了船。
+          
+          通过IMO查找正确船只，通常一个IMO会有好几个vessel id 
+          
      
+      
+
+
+     
+ 
