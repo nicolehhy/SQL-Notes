@@ -9,6 +9,28 @@ Truncate: Truncate is used to delete all the rows from a table;
           
 ## Q2 : Different subsets of SQL ?
 DDL: This consists of the commands that can be used to define the database schema.
+     CREATE, ALTER, DROP, TRUNCATE, COMMENT, RENAME
+    
 DML: This consists of the commands that can deal with the manipulation of data in the database.
+     SELECT, INSERT, UPDATE, DELETE, MERGE, CALL, EXPLAIN PLAN, LOCK TABLE
+     
 DCL: This includes commands which deal with the rights, permissions and other controls of the database.
+     GRANT, REVOKE
+     
 TCL: This deals with the transaction of database.
+     commit、rollback，savepoint， set transcation
+     
+## Q3 What do you mean by DBMS? What are its different types?
+It is a software application that interacts with user, applications and the database itself to capture and analyze the data.
+And the data stored in the database can be modified, retrieved and deleted, can can be any type like strings, numbers and ETC.
+
+Hirerarchial: it had the style of processor, and the successive type of relationship. So it has a structure similiar to that of
+a tree while in the nodes represent the records and the branches of the tree represent the fileds.
+
+Relationship: it use a structure that allows the users to identify and access data in a ralation to another piece of data in 
+the database.
+
+Network: it supports to many to many relations where in multiple member record can be linked
+
+Objected: and the object oriented databases management system use a small individual software called objects and each object contains 
+a piece of data and intructions for the actions to be done for the data.
