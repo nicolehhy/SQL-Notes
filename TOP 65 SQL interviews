@@ -34,3 +34,48 @@ Network: it supports to many to many relations where in multiple member record c
 
 Objected: and the object oriented databases management system use a small individual software called objects and each object contains 
 a piece of data and intructions for the actions to be done for the data.
+
+## Q4 What do you mean by table and field ?
+Table refers to the collection of data in an organised manner in form of rows and columns. 
+A field refers to the number of columns in a table. 
+
+## Q5 What are joins in SQL ?
+Join refers to combine data from two or more tables, based on a related column between them. It is used to merge two tables or 
+retrieve data from there. There are four joins in SQL
+Inner Join : 
+Left Join :
+Right Join ：
+Full Join :
+
+## Q6 What is the difference between CHAR and VARCHAR2 datatype in SQL ?
+Both of them can be used for character datatype. VARCHAR2 can be used for strings of variable length while CHAR can be used 
+for strings of fixed length. For example, char(10) can only store 10 characters and will not be able to store a string of any 
+other length whereas varchar2(10) can store any length i.e 6,8,2 in this variable.
+
+## Q7 What is a Primary key ?
+A primary key is a column or a set of columns that uniquely identifies each row in a table.
+Null values not allowed.
+
+## Q8 What are Constraints ?
+Constraints are used to specify the limit on the data type of the table. 
+It can be specified while creating or altering the table statement. The sample of constraints are:
+
+-NOT NULL
+-CHECK
+-DEFAULT
+-UNIQUE
+-PRIMARY KEY
+-FOREIGN KEY
+
+## Q9  What is the difference between SQL and MySQL ?
+SQL is a santdard language that stands for structured query language based on the English Language, it is the core of relational database
+which is used for accessing and mangeing database wheras MySQL is a relational database management system, such like SQL SERVER.
+
+## Q10 What is a Unique key ?
+
+
+
+
+
+
+
