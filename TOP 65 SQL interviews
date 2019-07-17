@@ -73,6 +73,82 @@ which is used for accessing and mangeing database wheras MySQL is a relational d
 
 ## Q10 What is a Unique key ?
 
+Unique key identified a single row in a table.
+Multiple value are allowed oer table.
+Null value allowed.
+
+## Q11 What is a Foreign key ?
+Foreign key maintains the referential integrity by enforcing a link between the data in two tables.
+Foreign key in the child table references the primary key in the parent table.
+The foreign key constraint prevents actions that would destroy links between the child and parent tables.
+
+## Q12 What do you mean by data integrity ?  
+Data Integrity defines the accuracy as well as the consistency of the data stored in a database. 
+It also defines integrity constraints to enforce business rules on the data when it is entered into an application or a database.
+
+## Q13 What is the difference between clustered and non clustered index in SQL ?
+The differences between the clustered and non clustered index in SQL are :
+
+Clustered index is used for easy retrieval of data from the database and its faster whereas reading from non clustered index 
+is relatively slower.
+Clustered index alters the way records are stored in a database as it sorts out rows by the column which is set to be 
+clustered index whereas in a non clustered index, it does not alter the way it was stored but it creates a separate object 
+within a table which points back to the original table rows after searching.One table can only have one clustered index 
+whereas it can have many non clustered index
+
+## Q14 What do you mean by Denormalization ?
+Denormalization refers to a technique which is used to access data from higher to lower forms of a database. It helps 
+the database managers to increase the performance of the entire infrastructure as it introduces redundancy into a table. 
+It adds the redundant data into a table by incorporating database queries that combine data from various tables into 
+a single table.
+
+## Q15 What are Entities and Relationships ?
+Entities:  A person, place, or thing in the real world about which data can be stored in a database. Tables store data 
+that represents one type of entity. For example – A bank database has a customer table to store customer information. 
+Customer table stores this information as a set of attributes (columns within the table) for each customer.
+
+Relationships: Relation or links between entities that have something to do with each other. For example – The customer name 
+is related to the customer account number and contact information, which might be in the same table. There can also be 
+relationships between separate tables (for example, customer to accounts).
+
+## Q16 What is an Index ?
+An index refers to a performance tuning method of allowing faster retrieval of records from the table. An index creates an 
+entry for each value and hence it will be faster to retrieve data.
+
+## Q17 Explain different types of index.
+Unique Index:
+
+This index does not allow the field to have duplicate values if the column is unique indexed. If a primary key is defined, 
+a unique index can be applied automatically.
+
+Clustered Index:
+
+This index reorders the physical order of the table and searches based on the basis of key values. Each table can only have 
+one clustered index.
+
+Non-Clustered Index:
+
+Non-Clustered Index does not alter the physical order of the table and maintains a logical order of the data. Each table can 
+have many nonclustered indexes.
+
+## Q18 What is Normalization and what are the advantages of it ?
+Normalization is the process of organizing data to avoid duplication and redundancy. Some of the advantages are:
+
+Better Database organization
+More Tables with smaller rows
+Efficient data access
+Greater Flexibility for Queries
+Quickly find the information
+Easier to implement Security
+Allows easy modification
+Reduction of redundant and duplicate data
+More Compact Database
+Ensure Consistent data after modification
+
+
+
+
+
 
 
 
