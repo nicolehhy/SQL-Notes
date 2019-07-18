@@ -433,6 +433,19 @@ set(val1, val2, val3...)
  
  ## Select 
  SELECT [ALL|DISTINCT] select_expr FROM -> WHERE -> GROUP BY [合计函数] -> HAVING -> ORDER BY -> LIMIT <br>
+ Tips: Second one is faster than first one
+ ```SQL
+ select count(distinct code_un) from from lookup.iss_vl_alias_port_group
+ where country_un = 'CN'
+ ```SQL
+ select count(*)
+ from 
+ (
+ select distinct code_un from lookup.iss_vl_alias_port_group
+ where country_un = 'CN'
+ )b
+```SQL
+ 
 * select_expr
 ```sql
     -- 可以用 * 表示所有字段。
@@ -496,6 +509,12 @@ set(val1, val2, val3...)
     升序：ASC，降序：DESC
     支持多个字段的排序。
 ```    
+```SQL
+select *, row_number() over (order by poi DESC) as value from as_poi
+where type ='Bulk Terminal' and lo_country_code ='CA'
+select *, row_number() over (partition by cmdty order by poi DESC) as value from as_poi
+where type ='Bulk Terminal' and lo_country_code ='CA'
+```
 * LIMIT 子句，限制结果数量子句
 ```sql
     仅对处理好的结果进行数量限制。将处理好的结果的看作是一个集合，按照记录出现的顺序，索引从0开始。
