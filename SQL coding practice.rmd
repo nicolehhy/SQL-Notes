@@ -23,7 +23,7 @@ INNER JOIN
 (SELECT s_num,grade 
 FROM Course
 WHERE course=2)c
-ON a.s_num=c.s_num
+ON b.s_num=c.s_num
 
 WHERE b.grade>c.grade
 ```
