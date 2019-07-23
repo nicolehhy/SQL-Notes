@@ -3,8 +3,29 @@
 ##############################
 
 ## Q1 : Find out the students choosing Course1 has greater grade than the ones who choose Course2.
-```
-select name from stu
+
+Tip: Find out the students choosing Course1 or Course2 first;
+     Using join with the main table with 'where' to filter the result on 'greater grade' condition;
+     < We can compare the grade during the 'join' process >
+```SQL
+SELECT a.s_num, a.stu_name
+FROM
+(SELECT s_num,stu_name 
+FROM Student)a
+
+INNER JOIN
+(SELECT s_num,grade 
+FROM Course
+WHERE course=1)b
+ON a.s_num=b.s_num
+
+INNER JOIN
+(SELECT s_num,grade 
+FROM Course
+WHERE course=2)c
+ON a.s_num=c.s_num
+
+WHERE b.grade>c.grade
 ```
 
 
