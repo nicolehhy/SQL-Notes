@@ -3,9 +3,9 @@
 ##############################
 
 ### Q1 : Find out the students choosing Course1 has greater grade than the ones who choose Course2.
-```SQL
+
 select name from stu
-```
+
 
 
 
