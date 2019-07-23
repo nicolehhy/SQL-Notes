@@ -2,10 +2,10 @@
 #### SQL coding practice #####
 ##############################
 
-### Q1 : Find out the students choosing Course1 has greater grade than the ones who choose Course2.
-
+## Q1 : Find out the students choosing Course1 has greater grade than the ones who choose Course2.
+```
 select name from stu
-
+```
 
 
 
