@@ -27,6 +27,37 @@ ON b.s_num=c.s_num
 
 WHERE b.grade>c.grade
 ```
+Tip : We need to find out cd_name having both A and B comodity;
+      We use 'Join' to join them so they can be rows with same cd_name and compared with each other
+      Use the 'Where' filter outside these two subqueries
+```SQL
+SELECT a.cd_name,a.poi,b.poi
+FROM
+(SELECT cd_name, poi FROM as_poi 
+		where lo_country_code= 'CN' 
+		and lo_city_code ='NJG'
+		and cmdty='CDFG')a 
+INNER JOIN (SELECT cd_name, poi FROM as_poi 
+		where lo_country_code= 'CN' 
+		and lo_city_code ='NJG'
+		and cmdty='CDFG')b ON a.cd_name=b.cd_name
+WHERE a.poi > b.poi
+```
+
+### Q2 : Find out the anchors who are level 2 but have higher socre than the ones with level 1
+
+Tip : We just need to find out the anchors whose scores are larger than the minimum socre of level 1 anchors;
+      So here we can use 'where' clause, because we can set score < specific number.
+```SQL
+SELECT cd_name, poi FROM as_poi 
+		where lo_country_code= 'CN' 
+		and lo_city_code ='NJG'
+		and cmdty='CDFG'
+		and poi < (select min(poi) FROM as_poi 
+		where lo_country_code= 'CN' 
+		and lo_city_code ='NJG'
+		and cmdty='K') 
+```
 
 
 
