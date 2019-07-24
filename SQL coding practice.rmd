@@ -59,7 +59,7 @@ SELECT cd_name, poi FROM as_poi
 		and cmdty='K') 
 ```
 
-Q3 : Find out the students who have average score larger than 60
+## Q3 : Find out the students who have average score larger than 60
 
 Tip : Find out the student_id whose avg scores are larger than 60 first;
       Then using 'INNER JOIN' to get the student_name from S table.
@@ -71,7 +71,7 @@ inner join
 (select s_no,avg(grade) from C c group by s_no having avg(grade) > 60 ) ON s.s_no=c.s_no
 ```
 
-Q4 : Find out the students who failed all the courses
+## Q4 : Find out the students who failed all the courses
 
 Tip : Find out the student_id who has at least one course with 60 or more
       Then using 'NOT IN' in that range to get the student_name from S table.
@@ -81,5 +81,18 @@ SELECT stu_name
 FROM student
 WHERE stu_num NOT IN ( SELECT stu_num FROM course where grade > 60)
 ```
+
+## Q5 ： Find out the sum of the quantity where operation = 'BLADE‘
+
+Tip : Notice that there would be an aggregation function 'sum()';
+      Use 'group by' at the end; 
+```SQL
+select operation, sum(quantity)
+from inchcape.iss_raw_archive_2 
+where vessel = 'ASTOMOS VENUS'
+and operation = 'BLDATE'
+group by operation
+```
+
 
 
