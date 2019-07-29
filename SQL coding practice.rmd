@@ -94,5 +94,20 @@ and operation = 'BLDATE'
 group by operation
 ```
 
+# Q6 ： Find out the students who take all same courses with student 1
+
+Tip: Find out the courses student1 take first;
+     Then find out students who take at least one course different from student1;
+     select out the students whose id are different from second step;
+```SQL     
+SELECT stu_id FROM COURSE WHERE stu_id NOT IN
+(SELECT stu_id FROM COURSE WHERE c_id NOT IN
+(SELECT c_id FROM Course WHERE stu_id = 1))
+GROUP BY stu_id
+HAVING count(*) = 
+(SELECT count(c_id) FROM COURSE
+WHERE stu_id = 1) and stu_id =!1
+```
+
 
 
