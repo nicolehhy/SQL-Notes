@@ -55,16 +55,129 @@ No.1 航线追踪，整理出有问题的航线记录，结合数据可视化结
           
  
  
- No.2  核对与agency report未匹配的航线信息。agency report的信息中会显示船只计划中到达港口的货物接卸情况，我们先找到与其未匹配的数据库航线记录，然后
-       进一步探索是航线记录出现问题，还是agency report的信息给错了。这两种情况都有可能发生。
+ No.2  核对与agency report未匹配的航线信息。agency report的信息中会显示船只计划中到达港口的货物接卸情况，我们先找到与其未匹配的航线记录，然后
+       进一步探索是航线记录出现问题，还是agency report的信息给错了。这两种情况都有可能发生。本质是我们需要让数据库识别到指定日期的记录被识别为
+       U/L并且对应货种为指定货种。
+  
        
-      I 检查航线记录 
-        首先通过bargo页面，找到船只的vessel id， 通过
+        检查航线记录 
+        首先通过bargo页面，找到船只的vessel id， 通过以下代码找到船只对应的航线记录 (原油对应——asvt_arrival，干货对应——asvt_arrival_dry）
         ```SQL
         SELECT * FROM asvt_arrival
-        where vessel =1527333                                                                                                                                                                                              
+        where vessel =1527333(vessel id)                                                                                                 
         order by date_arrive DESC 
         ```
+        
+       1. 航线记录在agency report指定的日期内卸货，此条记录没有U/L 标志和货种类别。按以下步骤层层确认信息。
+       
+          @1 draught明显有问题,更改draught 
+             ```SQL
+             insert into asvt_draught_x values(5364942, '2019-02-19 00:00:00', 14.8) on conflict do nothing;
+             ```
+          @2 查看是否缺失arrival，如若缺失，补上arrival (原油对应——asvt_arrival_x_values，干货对应——asvt_arrival_dry_x values）
+             ```SQL
+             insert into asvt_arrival_x values(15685, 101785, '2018-04-06 00:00:00') on conflict do nothing;
+             ```
+          @3 查看港口POI 是否可接卸指定货种，其港口名称是否与agency report中的地名统一 
+             将bargo打开，查看接卸货物港口是否有POI指定货种接卸标志，如果没有，记录在待纠错的记录旁 (后续会介绍到POI类问题的解决方法）
+             如果地名与agency report中的不同，我们需要查看两个地名是否是在同一个省份并且地理位置接近，如若是，我们强行匹配地名
+             ```SQL
+             insert into lookup.iss_vl_alias_port_group values('CN','TAO','CN','RZH') on conflict do nothing;
+             insert into lookup.iss_vl_alias_port_group values('CN','RZH','CN','TAO') on conflict do nothing;
+             ```
+             如若地名在不同城市甚至不同国家，查看agency report前后几个月里是否有去过航线信息中港口的记录
+             ```SQL
+             select * from inchcape.iss_raw_archive_2 
+             where vessel = 'GENER8 OCEANUS'
+             order by operation_date DESC
+             ```
+             如果有，查看是否有相匹配的航线，匹配则删除待纠错记录，不匹配则强行force match the date
+             ```SQL
+             insert into inchcape.iss_process_mod values('KING DANIEL','ARRIVEDDATE','CRUDE OILS, TBC',0.00,'2018-09-19',
+             'SHANGHAI',5744384,21256,'2018-09-27 05:49:11','2018-10-04 07:47:23');
+             ```
+             如果report中没有地图上的港口记录，那么将记录删除
+             
+          @4 查看agency report的船只类型
+             如果report中该船大部分记录为clean的货种，但待纠错记录说接卸原油，那么我们可以确定agency report这条待纠错记录是错误的，我们将其删除
+             ```SQL
+             insert into asvt_arrival_x_out values(19425, 301882, '2018-11-23 11:58:17') on conflict do nothing;
+             ```
+          @6 修改agency report中的operation——direction
+             当上述问题都被解决后，我们发现船只在指定日期，指定港口附近的货物进出口方向与report想法，我们此时根据地图实际看到的航线更改report中的
+             operation——direction
+             ```SQL
+             insert into inchcape.iss_raw_archive_mod (operation, grade, quantity, vessel, port, operation_date, direction,grade_code)
+             values('SAILEDDATE','MEREY 16',44764.00,'TIAN LONG ZUO','ZHUHAI','2018-01-25','Loading','') on conflict do nothing;
+             ```
+          @6 强行添加U/L 
+             如果上述步骤都没有查找到问题，那么我们可以强行在指定航线记录中添加U/L 标志，以此让其匹配
+             (这里有特殊公式）
+          
+       2. 航线记录不在agency report指定的日期内卸货，此条记录没有U/L 标志和货种类别。按以下步骤层层确认信息。
+          
+          @1 重复以上步骤查看航线实际信息是否正确
+             
+             确保draught变化符合实际情况，有错便更改
+             确保没有missing arrival，有缺失便更改
+             确保去了report给出的指定港口，没去就重复1@3的步骤
+             确保船只是运输指定货种的船，不是就直接将agency report待纠错记录删除
+             确保operation——direction 符合agency report的信息，不符合考虑更改方向
+             确保agency report中没有与实际日期匹配的记录，如果有，就强行删除待纠错记录
+             如果上述都确保正确后，强行force match 日期
+              ```SQL
+             insert into inchcape.iss_process_mod values('KING DANIEL','ARRIVEDDATE','CRUDE OILS, TBC',0.00,'2018-09-19',
+             'SHANGHAI',5744384,21256,'2018-09-27 05:49:11','2018-10-04 07:47:23');
+             ```
+             
+         3. 如果船只在指定港口没有draught变化，我们也找不到其他的错误信息，那么我们就强行删除待纠错agency report记录
+         
+    
+    No.3 POI research
+    
+         当我们遇到No.2 1@3中，不确定指定POI是否可unload/load某种货物时，我们要做相应的港口调查，来确认信息
+         
+         1. 查找去过该POI且有对应的agent记录的信息有多少 (如果我们查找它是否可接卸原油，那么agent记录中也要是接卸原油的信息）
+         ```SQL
+         SELECT * FROM asvt_arrival
+         WHERE vessel IN 
+         (SELECT vessel FROM as_vessel_exp
+         WHERE imo IN(
+         select distinct imo from inchcape.iss_raw_archive_2 where port ilike '%jinshan%' 
+         and grade ilike '%crude%' 
+         ) 
+         AND poi= 102743)
+         order by 1,3 DESC
+         ```
+         
+         2. 得到上述信息后，一条条查看相应船只的agent report中是否有匹配的货种接卸信息，得出船只去往该POI接卸某种货物的频数，作为补充信息
+         ```SQL
+         select * from inchcape.iss_raw_archive_2 
+         where imo IN
+         (select imo from as_vessel_exp
+         where vessel =61613 ) and port ilike '%zhuhai%' and grade ilike '%crude%'
+         order by operation_date DESC
+         ```
+         
+         3. 搜索POI接卸码头，上网搜索相关码头货物接卸信息
+         
+         @1 搜索‘ 某某港口几号码头原油 规划与布置’ 有时能搜索到我们想要的信息
+         @2 打开百度地图， 通过经纬度查找到该港口位置
+         ```SQL
+         select * from as_poi where poi =  102743
+         ```
+            查看管理该港口的公司的官网是否有介绍与码头相关的货物接卸报告
+            例如搜索 ‘ Hong Kong International Airport Fuel Facility (PAFF)’ 
+            
+            查看百度地图上，POI附近是否有化工公司，搜索这些公司的官网是否有介绍与码头相关的货物接卸报告
+            
+          结合上述所有信息，进一步确认该POI是否可接卸某货种
+            
+          
+             
+         
+          
+       
           
      
       
