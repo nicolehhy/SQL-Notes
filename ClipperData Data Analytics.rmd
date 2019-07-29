@@ -158,6 +158,7 @@ No.1 航线追踪，整理出有问题的航线记录，结合数据可视化结
          where vessel =61613 ) and port ilike '%zhuhai%' and grade ilike '%crude%'
          order by operation_date DESC
          ```
+         该步骤也看出该船只是否是可运输某种货物的船，如果不是，直接确定该POI不能接卸某货种。
          
          3. 搜索POI接卸码头，上网搜索相关码头货物接卸信息
          
