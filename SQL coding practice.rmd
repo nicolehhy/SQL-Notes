@@ -109,5 +109,90 @@ HAVING count(*) =
 WHERE stu_id = 1) and stu_id =!1
 ```
 
+## Q7 : Find out the student and their avg_grade who have failed more than tow course 
+
+Tips : Find out the students who failed more than two courses;(using GROUP BY and AVG)
+       INNER JOIN the table 
+```SQL
+SELECT a.stu_name, b.avg_sc FROM
+(SELECT stu_id, stu_name FROM Student)a
+INNER JOIN 
+(
+SELECT stu_id,avg(grade) as avg_sc FROM Course
+WHERE grade < 60
+Group by stu_id
+HAVING count(c_id) >2 
+)b
+ON a.stu_id = b.stu_id
+```
+## Q8 : Find out the pass_rate...
+
+Tips : Find out how to calcualte the pass_rate; (using AVG(0,1) to calculate this)
+```SQL
+SELECT c_id, c_name, MAX(grade),Min(grade),AVG(grade),
+       AVG(CASE WHEN grade >= 60 THEN 1 ELSE 0 END),
+       AVG(CASE WHEN grade >= 70 AND grade <= 80 THEN 1 ELSE 0 END),
+       AVG(CASE WHEN grade >= 80 AND grade <= 90 THEN 1 ELSE 0 END),
+       AVG(CASE WHEN grade >= 90 THEN 1 ELSE 0 END)
+FROM Course
+GROUP BY c_id,c_name
+```
+
+## Q9 : Find out the score rank of every course
+
+Tips : Find out the score rank of every course;(using ROW_NUMBER() OVER(PARTITION BY course ORDER BY grade)
+
+```SQL
+SELECT created_by,cmdty, poi, 
+row_number() over(partition by cmdty order by poi DESC) rank FROM as_poi
+where cmdty IN ('C','R') and created_by IN ('austin_swertfager','yuwen_li','demi_alifu')
+order by cmdty,poi DESC
+```
+
+## Q10 : Find out the score rank of 2 and 3 in every course
+
+Tips : Find out the score rank of every course;(using ROW_NUMBER() OVER(PARTITION BY course ORDER BY grade)
+
+```SQL
+select stu_id,c_id, grade, row_number(partition by c_id order by grade DESC) rank
+from course
+where rank IN (2,3)
+```
+
+## Q11 : Find out the number of each level in every course
+
+Tips : Find out the the number of every level;
+       (using count(case when then 1 else null);
+```SQL
+select c_id, 
+       count(case when grade < 60 then 1 else null) pass_rate,
+       count(case when grade > 70 and grade <80 then 1 else null) med_rate,
+       count(case when grade < 80 and grade <90 then 1 else null) good_rate,
+       count(case when grade > 90 then 1 else null) exc_rate
+from course
+group by c_id
+```
+
+## Q12 : Find out the students who were born in 1990
+
+```SQL
+select stu_id,stu_name
+from student
+where year(birth) = 1990
+```
+```SQL
+select stu_id,stu_name
+from student
+where birth like '%1990'
+```
 
 
+## Q13 : Find out the students who have more than courses with same grade
+
+```SQL
+select stu_id,c_id,grade from course c1
+inner join
+select stu_id, c_id, grade from course c2
+on c1.stu_id=c2.stu
+where c1.c_id != c2.c_id and c1.grade = c2.grade
+```
