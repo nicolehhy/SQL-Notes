@@ -196,3 +196,4 @@ select stu_id, c_id, grade from course c2
 on c1.stu_id=c2.stu
 where c1.c_id != c2.c_id and c1.grade = c2.grade
 ```
+https://blog.csdn.net/a379850992/article/details/55655495
