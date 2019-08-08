@@ -197,3 +197,39 @@ on c1.stu_id=c2.stu
 where c1.c_id != c2.c_id and c1.grade = c2.grade
 ```
 https://blog.csdn.net/a379850992/article/details/55655495
+
+
+## Q14 : Delte the records that has same information with original one
+```SQL
+DELETE * WHERE id NOT IN ( SELECT MIN(id) FROM table GROUP BY name,course,socre)
+```
+
+## Q15 : There is a table with one column " name", find the groups of two-two play 
+```SQL
+SELECT a.team, b.team FROM team a, team b WHERE a.team < b.team
+```
+
+## Q16 : Find out the id that has larger money than '101' in every month
+
+```SQL
+SELECT *, (SELECT month, max(money) FROM table WHERE id=101 GROUP BY month)b
+FROM table a
+WHERE a.month = b.month and a.money > b.max(money)
+```
+
+## Q17 copy the table
+
+SQL: select * into b from a where 1<>1       (where1=1，拷贝表结构和数据内容)
+Oracle:create table b
+
+As
+
+Select * from a where 1=2
+
+[<>（不等于）(SQL Server Compact)
+比较两个表达式。 当使用此运算符比较非空表达式时，如果左操作数不等于右操作数，则结果为 TRUE。 否则，结果为 FALSE。]
+
+## Q18 : Remind of something ahead of 5 mins
+```SQL
+SELECT event FROM table WHERE datediff('minute',f 开始时间,getdate())>5 
+```
