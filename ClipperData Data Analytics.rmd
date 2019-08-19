@@ -38,23 +38,7 @@ No.1 航线追踪，整理出有问题的航线记录，结合数据可视化结
      Ⅱ 初步判断发现指定日期附近所有的draught没有错误
        这种情况往往需要我们更仔细去核对地图信息和我们的航线信息。有时候draught没有变化意味着错误的情况或许较为难发现。
        首先我们需要查看指定日期附近的这一段从load到unload的voyage是变化是否符合实际情况，再者是虽然draught看上去没有错误，但是连续好几个event都没有变化
-       这也需要考虑是否缺失了arrival或者draught信息记录错误。
-       
-       没有‘U/L’记录  查看此处POI是否可以load或者unload相应货物，如果系统里不可以进行相应行为，需要考虑是否需要更新load处和unload处POI信息从而让数据库
-                     识别到这一行为或者强行添加U/L在新的table上
-       缺失arrival   insert into asvt_arrival_x values(5770284, 2892, '2019-01-09 00:00:00') on conflict do nothing;
-       draught错误   insert into asvt_draught_x values(6788, '2019-03-02 18:20:47',12.6) on conflict do nothing;
-       查看agency    如果发现draught没有变化，可通过查到next port或者pre port来double check是否实际是存在接卸行为，通过改变draught来修正voyage
-       查看event     有时候由于船只一直停留在港口，系统抓到了多个event，但是有些event在lightling room被误认为进入了港口，这时要查看真正进入港口的event
-                     是否可以接卸指定货物
-       
-      III 发现航线信息和地图不相符
-          这种情况下说明我们找错了船。
-          
-          通过IMO查找正确船只，通常一个IMO会有好几个vessel id，一一检查是否有与航线信息匹配的vessel id。
-          
- 
- 
+       这 
  No.2  核对与agency report未匹配的航线信息。agency report的信息中会显示船只计划中到达港口的货物接卸情况，我们先找到与其未匹配的航线记录，然后
        进一步探索是航线记录出现问题，还是agency report的信息给错了。这两种情况都有可能发生。本质是我们需要让数据库识别到指定日期的记录被识别为
        U/L并且对应货种为指定货种。
@@ -198,6 +182,28 @@ No.1 航线追踪，整理出有问题的航线记录，结合数据可视化结
        如果没有，我们就需要利用vessel名字，找到bargo中的信息，对港口记录进行纠正。最后的结果同样可以用EXCEL拖拉公式的方法进行处理。会高效很多。
        
        做工作一定要认真反反复复地检查，在上交工作前，一定要反反复复检查。注意质量，注意格式。
+       
+       @在反复实践中学到的小技巧：1. 先通过正则处理不需要文件信息的记录(正则技能get) 2. 将记录按文档(source_file)排序，在excel中通过公式进行拖拉，
+       更加方便直接。但要注意不要跳行。3. 运用到正则的时候记得记录下row 行数，这样以防不注意insert了很多不相关的行数。
+       ```SQL
+        select * from alert.inchcape_iss_raw_archive_discard
+        where x_out = 'f' 
+        and rec_operation_date = 'f' and operation_date != '' 
+        and operation_date ~* 'A/SIDE'
+        order by source_file limit 53;
+        ```
+        ```SQL
+        insert into inchcape_prod.iss_raw_archive_mod_pkey
+        (operation, grade_raw, quantity, vessel, port, operation_date, operation_date_new)
+         select operation, grade, quantity, vessel, port, operation_date, 
+        concat(substring(report_date,7,4),'-','0',substring(operation_date,4,2),'-',substring(operation_date,1,2))
+         from alert.inchcape_iss_raw_archive_discard
+         where x_out = 'f' 
+         and rec_operation_date = 'f' and operation_date != '' 
+         and operation_date ~* '^(\d{2})\/(\d{2})  (\d{2})\:(\d{2})';
+         ```
+         记住在EXCEL里，当复制粘贴代码的时候会出现引号“ ”是因为代码没有在一行~ 这个时候要用 CLEAN()公式清楚格式。
+       
        
     
        
