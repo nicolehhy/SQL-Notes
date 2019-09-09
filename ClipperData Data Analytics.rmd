@@ -204,9 +204,92 @@ No.1 航线追踪，整理出有问题的航线记录，结合数据可视化结
          ```
          记住在EXCEL里，当复制粘贴代码的时候会出现引号“ ”是因为代码没有在一行~ 这个时候要用 CLEAN()公式清楚格式。并且在代码里面，某些关键词记得要留
          空格，不然clean后这些关键词可能会和上一个词连接在一起，导致关键词失效。
-        
-       
-       
+         
+         
+         ***@@**** 最近找到了一种除了用正则匹配，更为高效的方式来处理数据
+            1. 首先我们通过找到出现错误信息的所有的source_file,根据出现的次数对其进行排序，从出现次数最多的文件开始批量处理。
+            ```SQL
+             select source_file, source_sheet, count(*) from alert.inchcape_iss_raw_archive_discard
+             where x_out = 'f' 
+             and rec_operation_date = 'f' and operation_date != '' 
+             group by source_file,source_sheet order by count(*) DESC
+             ```
+            2.其次我们依次从clipper_data 谷歌account中找到这些文件，通过VBA Macro宏的方法，将文件中的船只，ETA等信息抓取出来，具体代码如下：
+            ```
+            Sub Macro3()
+               Columns("A:O").Select
+               With Selection
+               .WrapText = False
+               .Orientation = 0
+               .AddIndent = False
+                .IndentLevel = 0
+               .ShrinkToFit = False
+               .ReadingOrder = xlContext
+                .MergeCells = False
+            End With
+               Selection.Replace What:="'", Replacement:="`", LookAt:=xlPart, SearchOrder _
+                :=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
+               Columns("A:A").Select
+               Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+               Range("A1").Select
+               ActiveCell.FormulaR1C1 = _
+                     "=CONCAT(""('"",TEXTJOIN(""','"",FALSE,RC[1]:RC[14]),""'),"")" 
+               Selection.AutoFill Destination:=Range("A1:A2000"), Type:=xlFillDefault
+               Range("A1:A2000").Select
+               Selection.Copy
+            End Sub
+            ```
+            ActiveCell.FormulaR1C1 = _
+                     "=CONCAT(""('"",TEXTJOIN(""','"",FALSE,RC[1]:RC[14]),""'),"")" 
+            这一部分可以自由更改，常用的公式是， ="('"&B11&"','"&TEXT(D11,"yyyy-mm-dd")&"'),"
+            
+            3. 抓取到所需信息后，我们需要将这些信息粘贴到PostgreSQL里面，将这个写信insert新的表中，这样方面我们在SQL中批量筛选和处理数据。
+            ```SQL
+            drop table if exists p1;
+            CREATE temporary TABLE P1 (
+               c1 TEXT,
+               c2 TEXT
+            );
+               INSERT INTO P1 VALUES
+            ---------------------------------
+               ('AU ARIES','2015-08-29'),
+               ('HELEN 118','2015-08-31'),
+            --------------------------------
+               ('','')
+               ;
+           ```
+           
+           4. 对数据进行批量筛选和处理
+           ```SQL
+           SELECT operation, grade, quantity, vessel, port, operation_date,c2 --and substring(c2,1,2) NOT IN ('11','12','13','14','15') 
+           ,CASE WHEN substring(c2,1,1) IN ('1','2','3') and substring(c2,1,2) not IN ('11','12','13','14','15','16')  
+           THEN concat(substring(report_date,7,4),'-','08','-',substring(c2,1,2))
+           ELSE concat(substring(report_date,7,4),'-','09','-',substring(c2,1,2)) END as time
+          FROM
+          (select *,row_number() over(partition by vessel,quantity,operation,grade order by c2) rank
+          FROM
+          (select *
+          from alert.inchcape_iss_raw_archive_discard
+          where x_out = 'f' 
+          and rec_operation_date = 'f' and operation_date != '' 
+          and source_file ~* 'APAC 37 - 1 2016__09-16-2016__.xlsm'
+          )a
+          INNER JOIN
+          (
+          select substring(c1,5,20) vs,c2 from p1  
+          )b
+          ON a.vessel=b.vs
+          )c
+          where rank = 1 --and c2 !~* '^(\d{2})\/(\d{2})' 
+          --and c2 !~* '^(\d{2})\/' and c2 ~ '^(\d{4})'
+          ```
+
+
+
+
+
+
+     
     
        
        
