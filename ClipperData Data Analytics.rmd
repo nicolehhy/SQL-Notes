@@ -328,7 +328,7 @@ SELECT 'host # ' || (random()*(10-1)+1)::int,  -- use '||' to connet things(but 
        (random()*(20000-2000)+2000)::int
 FROM (SELECT * 
       FROM generate_series(1,100))a;
-
+```
 
 ```SQL 
 --- Using 'LATERAL' to select the information 
