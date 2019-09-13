@@ -284,6 +284,66 @@ No.1 航线追踪，整理出有问题的航线记录，结合数据可视化结
           --and c2 !~* '^(\d{2})\/' and c2 ~ '^(\d{4})'
           ```
 
+No. 5  Advanced SQL usage
+
+@1 TIME PROBLEM - Calculation / Extract 
+```SQL
+SELECT date_trunc('year', now() - interval '5 year') -- extract part of the date to do calculation
+SELECT now() - '3 year'::interval -- to do calculation as timestampe
+SELECT (now() - '3 year'::interval)::date -- to do do calculation as timestamp but convert it to date format
+SELECT extract('year' from current_date) -- extract part of the date
+```
+
+@2 GENERATE RANDOM VALUES
+```SQL
+select (random()*10)::int as num, count(*)
+from generate_series(1,200)-- generate n values 
+group by num
+```
+
+@3 MAKE VALUE INTO INTEGER
+```SQL
+SELECT floor(random()*(25-1+1))+1 -- convert into integer (24.12/24.57 -> 24)
+SELECT ceiling(random()*(25-1+1))+1 -- convert into integer (24.12/24.57 -> 25)
+SELECT round(random()*(25-1+1))+1 -- convert into integer (24.12/24.57 -> 24/25)
+```
+
+@ CREATE TABLE / INSERT DATA/ USING 'LATERAL'
+```SQL
+--- Create a temporary table
+DROP TABLE IF EXISTS test;
+CREATE TEMP TABLE test(
+username TEXT,
+user_id INT,
+region TEXT,
+salary INT);
+```
+
+```SQL
+--- Insert data into the table
+INSERT INTO test (username,user_id,region,salary)
+SELECT 'host # ' || (random()*(10-1)+1)::int,  -- use '||' to connet things(but have to have strings)
+       (random()*(2000-1000)+1000)::int, -- generate random numbers with a specific range FROM 1000 to 2000
+       'US - ' || (random()*(20-1)+1)::int, 
+       (random()*(20000-2000)+2000)::int
+FROM (SELECT * 
+      FROM generate_series(1,100))a;
+
+
+```SQL 
+--- Using 'LATERAL' to select the information 
+SELECT two.* FROM
+(       
+SELECT * FROM(
+SELECT username, salary, region, rank() over(partition by region order by salary) rank
+FROM test t1)a WHERE a.rank IN(4,6)
+) AS one
+, 
+LATERAL(SELECT * FROM(  --- 'LATERAL' can let the subquery use condition from another parrellel table
+SELECT username, salary, region, rank() over(partition by region order by salary) rank
+FROM test t2)b WHERE b.rank IN (2,3) and one.region = b.region) AS two
+```
+
 
 
 
