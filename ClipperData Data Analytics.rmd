@@ -344,6 +344,10 @@ SELECT username, salary, region, rank() over(partition by region order by salary
 FROM test t2)b WHERE b.rank IN (2,3) and one.region = b.region) AS two
 ```
 
+### Decimal
+```SQL
+select round((73600 - 12000)/(98000-12000)::numeric,4) --- 0.716
+```
 
 
 
