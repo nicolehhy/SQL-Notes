@@ -1,0 +1,50 @@
+------------------
+-- Create Table --
+------------------
+drop table if exists city;
+create temp table city (
+    id int not null default 0,
+    name text default null,
+    price int not null default 0,
+    primary key(id) 
+    );
+comment on column city.id is 'city_id';
+insert into city values
+(3,'Chengdu',25000),
+(4,'Beijing',60000);
+select * from city;
+
+-- delete the table
+drop table city;
+ALTER TABLE city RENAME TO city_price;
+
+-- add column
+alter table city add column blt_yr int;  |  update city set built_year=2012 where name='Chongqing'; -- if you want to add value in the new column;
+-- drop column
+alter table city drop column blt_yr; 
+-- if the column is related with another column of other tables and you want to delete everything;
+alter table city drop blt_yr CASCADE;
+
+-----------------------
+-- change the column --
+-----------------------
+-- change the name of the column
+alter table city rename column blt_yr to built_year;
+-- change the attribte of the column
+ALTER TABLE city ALTER COLUMN price TYPE numeric(10,2);
+ALTER TABLE city RENAME COLUMN price TO house_price;
+
+--------------------
+-- add constraint --
+--------------------
+ALTER TABLE city ADD CHECK (name <> '');   |   insert into city (name) values('');  <double check>
+ALTER TABLE city ADD CONSTRAINT onlycity UNIQUE (name);
+ALTER TABLE city ADD FOREIGN KEY (name) REFERENCES product_groups;
+ALTER TABLE products ALTER COLUMN product_no SET NOT NULL; --- make sure table already fits the rule.
+ALTER TABLE city ALTER COLUMN price SET DEFAULT 7.77; -- it only has effects on future information.
+----------------------
+-- delete constraint -
+----------------------
+ALTER TABLE city DROP CONSTRAINT onlycity; -- it is easy if you have a name with the constraint
+ALTER TABLE city ALTER COLUMN name DROP NOT NULL;
+ALTER TABLE city ALTER COLUMN price DROP DEFAULT;
