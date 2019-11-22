@@ -1,3 +1,4 @@
+```SQL
 ------------------
 -- Create Table --
 ------------------
@@ -8,6 +9,7 @@ create temp table city (
     price int not null default 0,
     primary key(id) 
     );
+--- add comment on one column
 comment on column city.id is 'city_id';
 insert into city values
 (3,'Chengdu',25000),
@@ -48,3 +50,4 @@ ALTER TABLE city ALTER COLUMN price SET DEFAULT 7.77; -- it only has effects on 
 ALTER TABLE city DROP CONSTRAINT onlycity; -- it is easy if you have a name with the constraint
 ALTER TABLE city ALTER COLUMN name DROP NOT NULL;
 ALTER TABLE city ALTER COLUMN price DROP DEFAULT;
+```
