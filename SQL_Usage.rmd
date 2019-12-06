@@ -51,3 +51,32 @@ ALTER TABLE city DROP CONSTRAINT onlycity; -- it is easy if you have a name with
 ALTER TABLE city ALTER COLUMN name DROP NOT NULL;
 ALTER TABLE city ALTER COLUMN price DROP DEFAULT;
 ```
+
+create database city;
+drop database city;
+
+create table city as 
+select city,code,name from country;
+drop table city;
+
+alter table city add column price int;
+alter table city add primary key(price);
+alter table drop primary key(price);
+
+insert into  city values(1,2,3,3);
+insert into  city select 1,2,3,4 from ...;
+delete from  city where ...;
+update city set 1=*,2=*,3=*,4=* where 1=....;
+
+EXCEPT运算符通过包括所有在 TABLE1 中但不在 TABLE2 中的行并消除所有重复行而派生出一个结果表。
+当 ALL 随 EXCEPT 一起使用时 (EXCEPT ALL)，不消除重复行。
+
+intersect 只包含T1和T2都有的行，并且会除去重复的行，而intersect all 就不消除重复行。
+
+between and 包括了边界，但是 not between 没有包含边界。
+
+删除表1中没有在表2中的信息
+delete from table1 where not exists ( select * from table2 where table1.field1=table2.field1 )
+
+日程提前五分钟安排
+select * from 日程安排 where datediff('minute',f开始时间,now())>5
