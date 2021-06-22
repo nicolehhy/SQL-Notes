@@ -273,3 +273,16 @@ JOIN
  ON d.dept_no=a.dept_no
     AND s.salary=a.maxSalary;
 ```
+## Q20 : 一张含有职位和薪水情况的表，提取出每个部门平均薪水
+【考点：group by avg()之后的结果，可以在order BY里直接用】
+```sql
+SELECT t.title
+       ,avg(salary) as avg_salary
+FROM titles t
+JOIN salaries s
+ON t.emp_no=s.emp_no 
+   AND t.to_date='9999-01-01'
+   AND s.to_date='9999-01-01'
+GROUP BY title
+ORDER BY avg_salary;
+```
