@@ -233,3 +233,43 @@ Select * from a where 1=2
 ```SQL
 SELECT event FROM table WHERE datediff('minute',f 开始时间,getdate())>5 
 ```
+## Q19 : 两张表，一张含有员工ID和薪水情况，另一张含有部门ID和员工ID，提取出每个部门薪水最高的员工及其薪水
+【考点：两种方法。1.使用窗口函数，先将两张表连接为一张表，拉通了进行部门分组排序，这样你就可以看到每一组的第一名是谁，最后选出第一名的员工即可
+               2.使用group by 与max()。将两张表连接，先提取出每个部门最高薪水的小表，然后将小表与大表内连接
+```SQL
+SELECT dept_no
+       ,emp_no
+       ,salary AS maxSalary
+FROM (
+        SELECT dept_no
+               ,s.emp_no
+               ,salary
+               ,RANK() OVER (PARTITION BY dept_no
+                           ORDER BY salary DESC) AS ranking
+        FROM dept_emp d
+        JOIN salaries s
+        ON d.emp_no=s.emp_no
+        WHERE d.to_date='9999-01-01'
+              AND s.to_date='9999-01-01'
+      )a
+WHERE a.ranking=1;
+```
+```SQL
+SELECT d.dept_no
+        ,s.emp_no
+        ,s.salary
+FROM dept_emp d
+JOIN salaries s
+ON d.emp_no=s.emp_no
+   AND d.to_date='9999-01-01' AND s.to_date='9999-01-01'
+JOIN 
+(SELECT dept_no
+         ,MAX(salary) AS maxSalary
+ FROM dept_emp d
+ JOIN salaries s
+ ON d.emp_no=s.emp_no
+ WHERE d.to_date='9999-01-01' AND s.to_date='9999-01-01'
+ GROUP BY dept_no)a
+ ON d.dept_no=a.dept_no
+    AND s.salary=a.maxSalary;
+```
