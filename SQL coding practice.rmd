@@ -308,3 +308,5 @@ JOIN employees e
 ON e.emp_no=a.emp_no
 WHERE a.ct=1;
 ```
+## Q22 : 一张表含有员工信息，将员工的姓名连接起来
+【考点：考察 concat公式，concat（a,",",b)】
