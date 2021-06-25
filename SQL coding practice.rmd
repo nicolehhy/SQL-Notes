@@ -310,3 +310,99 @@ WHERE a.ct=1;
 ```
 ## Q22 : 一张表含有员工信息，将员工的姓名连接起来
 【考点：考察 concat公式，concat（a,",",b)】
+## Q23 : 插入数据
+【考点：insert in table (column1, col2,...)
+       values
+       (1,2,2..),
+       (1,2,2..);】
+【考点：如果表里已经有这个数据了，不操作。
+mysql中常用的三种插入数据的语句:
+insert into表示插入数据，数据库会检查主键，如果出现重复会报错；
+replace into表示插入替换数据，需求表中有PrimaryKey，或者unique索引，如果数据库已经存在数据，则用新数据替换，如果没有数据效果则和insert into一样；
+`insert ignore`表示，如果中已经存在相同的记录，则忽略当前新数据；
+insert ignore into actor values("3","ED","CHASE","2006-02-15 12:34:33");
+## Q24:
+本题目考察MYSQL创建数据表的三种方法：
+常规创建
+1.create table if not exists 目标表
+复制表格
+2.create 目标表 like 来源表
+3.将table1的部分拿来创建table2 （create 表 然后insert into 这个表 直接select想要内容）
+
+MySQL中四种方式给字段添加索引
+发表于 2020-11-18 13:14:04
+看大家都用的是sqlite的语法，这里简单提一下关于MySQL中给字段创建索引的四种方式：
+
+添加主键
+ALTER TABLE tbl_name ADD PRIMARY KEY (col_list);
+// 该语句添加一个主键，这意味着索引值必须是唯一的，且不能为NULL。
+添加唯一索引
+ALTER TABLE tbl_name ADD UNIQUE index_name (col_list);
+// 这条语句创建索引的值必须是唯一的。
+添加普通索引
+ALTER TABLE tbl_name ADD INDEX index_name (col_list);
+// 添加普通索引，索引值可出现多次。
+添加全文索引
+ALTER TABLE tbl_name ADD FULLTEXT index_name (col_list);
+// 该语句指定了索引为 FULLTEXT ，用于全文索引。
+PS: 附赠删除索引的语法：
+DROP INDEX index_name ON tbl_name;
+// 或者
+ALTER TABLE tbl_name DROP INDEX index_name；
+ALTER TABLE tbl_name DROP PRIMARY KEY;
+SELECT * FROM salaries FORCE INDEX(idx_emp_no) WHERE emp_no = 10005; `强制索引`
+
+## Q25  创建视图～
+CREATE VIEW v_article AS SELECT A.title, A.content, A.author, C.name AS categoryName FROM article AS A JOIN articleCategory AS C ON A.articleCategoryId=C.articleCategoryId;
+
+## Q26 新增一列
+alter table actor 
+add `create_date` datetime not null default '2020-10-01 00:00:00';
+
+## Q27 创建触发器
+触发器的作用是监视某个动作并对此做出反应。例如可创建一个触发器为：当在一张表中插入新的数据后，相应地就要在另一个表里加入相应地数据。
+ ```sql
+ create trigger audit_trigger
+ after 
+ insert on table1
+ for each row
+ begin
+insert into table2 values (a.id,a.name);
+ end
+ ```
+ ## Q28 从表里删除东西,以及更新表的内容
+```sql
+ delete from titles_test
+where id not in(
+    select * 
+        from (
+              select min(id)
+                  from titles_test
+                    group by emp_no
+        )a
+);
+UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
+```
+
+## Q29 将已有的表中的值替换成新的数,更新表名,创建外键
+```sql
+update table1 set column1=
+replace(column1,value_old,value_new)
+where ....;
+
+ALTER TABLE titles_test RENAME TO titles_2017
+
+创建外键 ALTER TABLE audit ADD CONSTRAINT FOREIGN KEY (emp_no) REFERENCES employees_test(id);
+```
+## Q30 更新表中的信息
+```sql
+update salaries
+set salary=salary*1.1
+where to_date="9999-01-01" and emp_no in
+(
+    select emp_no
+    from emp_bonus
+);
+```
+## Q31 替换字符串 replace(字符串，“需要替换的子串”，“用于替换子串的字符串”）
+
