@@ -406,3 +406,21 @@ where to_date="9999-01-01" and emp_no in
 ```
 ## Q31 替换字符串 replace(字符串，“需要替换的子串”，“用于替换子串的字符串”）
 ## Q32 排除某列中的最大最小值，不可以同时选择最大最小值，在一个括号中，因为每次选择都是一列，这样就成了两列了，而不是一个集合
+## Q33 使用含有关键字exists找到不在表2中表1的信息。
+```sql
+SELECT *
+FROM employees
+WHERE NOT EXISTS (SELECT emp_no
+                 FROM dept_emp
+                 WHERE employees.emp_no = dept_emp.emp_no);
+```
+## Q34 统计累加类型的题目，利用窗口函数
+```sql
+select emp_no,
+        salary,
+        sum(salary) over(order by emp_no) as running_total
+from salaries
+where to_date='9999-01-01'
+```
+
+## Q35 统计出每天的次日留存率
